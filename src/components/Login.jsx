@@ -1,10 +1,9 @@
 import { useState } from "react"; 
 import { Eye, EyeOff, LogIn } from "lucide-react"; 
-import api from "../services/api"; 
 import { useNavigate } from "react-router-dom";
 import ilustrasi from "../assets/ilustration.svg";
 import logo from "../assets/logoAbsensi.svg";
-import { loginDummy } from "../services/dummyAuth";
+import { loginUser } from "../services/authService";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,18 +19,16 @@ const Login = () => {
     setLoading(true);
 
   try {
-    const response = await loginDummy(userId, token) 
+    const response = await loginUser(userId, token) 
 
-    localStorage.setItem("user_data", JSON.stringify(response.data));
+    localStorage.setItem("user_data", JSON.stringify(response.data || response));
+
+    alert("Login Berhasil!");
 
     navigate("/history");
   } catch (err) {
-    if (err.response?.status === 401){
-      setError("User ID atau password salah");
-    } else {
-      setError("Login Gagal")
-    }
-       
+    setError(err.message || "Login Gagal");
+    alert("Gagal Login: " + err.message);
   } finally {
     setLoading(false);
   } 
@@ -92,8 +89,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"} 
                     placeholder="Input..." 
                     className="w-full h-[44px] px-[14px] rounded-[16px] border
-                     border-[#D1D1D1] outline-none focus:ring-1 focus:ring-orange-500 transition-all text-[14px] placeholder: text-[#BABABA]"
-                    style={{ color: '#ffffff'}}
+                     border-[#D1D1D1] outline-none focus:ring-1 focus:ring-orange-500 transition-all text-[14px] placeholder: text-black"
                      value={token}
                     onChange={(e) => setToken(e.target.value)}
                     required

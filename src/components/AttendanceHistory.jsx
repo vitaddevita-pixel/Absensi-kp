@@ -5,7 +5,8 @@ import ClockIn from "../assets/icon-clockIn.svg";
 
 
 const AttendanceHistory = () => {
-    const [currentTime, setCurrentTime] = useState('--:--');
+   const [selectedHistory, setSelectedHistory] = useState(null);
+   
 
     useEffect(() => {
     const updateClock = () => {

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import ilustrasi from "../assets/ilustration.svg";
 import logo from "../assets/logoAbsensi.svg";
 import { loginUser } from "../services/authService";
+import {useSate, useEffect} from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,22 +15,43 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    localStorage.removeItem("last_clock_in");
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!userId.trim()) {
+      toast.error("Username tidak boleh kosong");
+      return;
+    }
+
+    if (!token.trim()) {
+      toast.error("Password tidak boleh kosong");
+      return
+    }
     setError("");
     setLoading(true);
 
   try {
     const response = await loginUser(userId, token) 
 
-    localStorage.setItem("user_data", JSON.stringify(response.data || response));
+    localStorage.setItem("user_data", JSON.stringify({
+      user_id: userId,
+      nama: userId,
+      ...response
+    }));
 
-    alert("Login Berhasil!");
+    if (response.jwt) {
+      localStorage.setItem("token_absensi", response.jwt);
+    }
+
+    toast.success("Login Berhasil");
 
     navigate("/history");
   } catch (err) {
-    setError(err.message || "Login Gagal");
-    alert("Gagal Login: " + err.message);
+    toast.error(err.message || "Login gagal!!");
   } finally {
     setLoading(false);
   } 
@@ -89,7 +112,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"} 
                     placeholder="Input..." 
                     className="w-full h-[44px] px-[14px] rounded-[16px] border
-                     border-[#D1D1D1] outline-none focus:ring-1 focus:ring-orange-500 transition-all text-[14px] placeholder: text-black"
+                     border-[#D1D1D1] outline-none focus:ring-1 focus:ring-orange-500 transition-all text-[14px] placeholder:text-black"
                      value={token}
                     onChange={(e) => setToken(e.target.value)}
                     required
@@ -108,6 +131,7 @@ const Login = () => {
 
               <button 
                 type="submit"
+                style={{ color: "white"}}
                 className="w-full h-[44px] bg-[#E9830E] hover:bg-orange-600 rounded-[32px]
                 flex items-center justify-center gap-2 px-[24px] mt-4
                 text-white font-bold text-[14px] border-0 shadow-none outline-none focus:outline-none focus: active: scale-[0.98] transition-all">

@@ -9,7 +9,6 @@ const AttendanceReview = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUpLoading, setIsUpLoading] = useState(false);
     const [errorValidasi, setErrorValidasi] = useState("");
-    const [coords, setCoords] = useState({lat:0, lng:0})
    
 
     const { foto, lokasi } = location.state || {};
@@ -21,8 +20,8 @@ const AttendanceReview = () => {
         nama: namaUser,
         tanggal: new Date().toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}),
         waktu: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit'}),
-        lat: lokasi ? lokasi[0] : "-7.4395730574307543",
-        lng: lokasi ? lokasi[1] : "110.9382480304",
+        lat: lokasi ?.[0] || "-7.4395730574307543",
+        lng: lokasi ?.[1] || "110.9382480304",
         foto: foto
     };
 
@@ -38,24 +37,6 @@ const AttendanceReview = () => {
             }
         }
     }
-
-    useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    setCoords({
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude
-                    });
-                },
-                (err) => {
-                    console.error("Gagal ambil lokasi asli");
-                    
-                    setCoords({ lat: -7.439573, lng: 110.938248 });
-                }
-            );
-        }
-    }, []);
 
     const handleBrowseClick = () => {
         fileInputRef.current.click();
@@ -73,7 +54,6 @@ const AttendanceReview = () => {
             navigate("/login");
             return;
         }
-
         setIsUpLoading(true);
 
         try {
@@ -82,9 +62,7 @@ const AttendanceReview = () => {
 
            reader.onloadend = () => {
             const base64Bukti = reader.result;
-
             const oldHistory = JSON.parse(localStorage.getItem("attendance_history") || "[]");
-
             const newRecord = {
                 id: Date.now(),
                 name: userData.nama,
@@ -98,12 +76,10 @@ const AttendanceReview = () => {
             };
             const updatedHistory = [newRecord, ...oldHistory];
             localStorage.setItem("attendance_history", JSON.stringify(updatedHistory));
-
             navigate("/attendance-success", {
                 state: { dataAbsen: newRecord }
             });
            }
-            
         } catch (err) {
             console.error("Upload error:", err);
             alert("Terjadi kesalahan koneksi ke server.");
@@ -114,7 +90,6 @@ const AttendanceReview = () => {
 
    return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 font-['Satoshi']">
-           
             <div 
                 style={{ 
                     width: '1409px', 
@@ -126,7 +101,6 @@ const AttendanceReview = () => {
                 className='bg-white p-[24px] flex flex-col justify-between transition-all'
             >
                 <div className="flex flex-col gap-[20px]">
-                    
                     <div className="flex flex-row items-center gap-[10px] w-[1361px] h-[137px]">
                         <div className="w-[133px] h-[137px] rounded-full overflow-hidden shrink-0">
                             <img 
@@ -136,12 +110,11 @@ const AttendanceReview = () => {
                             />
                         </div>
                     </div>
-
                     {[
                         { label: "Nama Karyawan", value: userData.nama },
                         { label: "Waktu Absen", value: userData.waktu },
-                        { label: "Longitude", value: userData.lat },
-                        { label: "Latitude", value: userData.lng }
+                        { label: "Latitude", value: userData.lat },
+                        { label: "Longitude", value: userData.lng }
                     ].map((item, index) => (
                         <div key={index} className="flex flex-col gap-[7px] w-[1361px] h-[46px] border-b border-[#c8c8c8]">
                             <label className="w-[88px] h-[16px] text-[12px] font-[500] leading-[100%] text-[#000000]">
@@ -152,14 +125,11 @@ const AttendanceReview = () => {
                             </p>
                         </div>
                     ))}
-
-                    {/* Form Bukti Foto */}
                     <div className="flex flex-col gap-[7px] w-[1361px] h-[105px] rounded-[13px] p-[12px] bg-white">
                         <label className="w-[88px] h-[16px] text-[12px] font-[500] leading-[100%] text-[#000000]">
                             Bukti Foto
                         </label>
                         <div className="flex flex-row items-center gap-[10px]">
-                            {/* Input File Hidden */}
                             <input 
                                 type="file" 
                                 ref={fileInputRef} 
@@ -190,7 +160,6 @@ const AttendanceReview = () => {
                     </div>
                 </div>
 
-                {/* Form Button Kirim Absensi */}
                 <div className="flex justify-end w-[1361px] h-[45px] gap-[10px]">
                     <button 
                         onClick={handleKirimAbsensi}
@@ -203,7 +172,6 @@ const AttendanceReview = () => {
                         </span>
                     </button>
                 </div>
-
             </div>
         </div>
     );

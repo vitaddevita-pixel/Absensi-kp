@@ -78,8 +78,6 @@ const AttendanceCapture = () => {
         return;
     }
 
-    console.log("Mencoba upload ke:", `api/face/upload`);
-
     try {
         const file = dataURLtoFile(image, "face.jpg");
         const formData = new FormData();
@@ -94,9 +92,7 @@ const AttendanceCapture = () => {
             const data = await response.json();
             console.log("Face upload sukses:", data);
             checkLocation(userLocation[0], userLocation[1], image);
-        } else {
-            alert("Wajah tidak dikenali oleh sistem");
-        }
+        } 
 
     } catch (err) {
         alert(err);
@@ -192,7 +188,7 @@ const AttendanceCapture = () => {
                             style={{ color : "white", text: Bold, fontSize:"16px"}}
                             className={`flex-1 h-[48px] w-[120px] py-3 border-none outline-none rounded-full font-bold text-base items-center justify-center transition-colors
                             ${isConfirmed 
-                            ? "bg-[hsla(0,0%,40%,1 )] cursor-not-allowed" 
+                            ? "bg-[#514f4f] cursor-not-allowed" 
                             : "bg-[#F4840B] hover:bg-orange-600"}
 `                           }
                             >

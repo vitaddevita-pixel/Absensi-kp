@@ -45,28 +45,24 @@ const AttendanceConfirm = () => {
                 }}
                 className="flex flex-col items-center justify-center shadow-[0_6px_10px_rgba(0,0,0,0.15)]"
             >
-                {/* ICON */}
+            
                 <div className="w-[180px] h-[180px] flex items-center justify-center mb-2">
                     <img src={checkIcon} alt="success" className="w-full h-full object-contain" />
                 </div>
 
-                {/* INFO WRAPPER */}
                 <div className="flex flex-col items-center leading-tight">
                     <p className="text-[16px] font-medium text-black m-0">{data.nama}</p>
                     <p className="text-[16px] font-bold text-black m-0">Kantor Pusat</p>
                 </div>
 
-                {/* JAM - Margin bottom dipangkas habis (mb-0) */}
                 <h1 className="text-[64px] font-bold text-black mt-2 mb-0 leading-none">
                     {data.time || data.waktu}
                 </h1>
 
-                {/* TANGGAL - Margin top dihilangkan (mt-0) agar mepet ke jam */}
                 <p className="text-[14px] font-bold text-black mt-5 mb-10 tracking-wide">
                     {getFormattedDate(data.date || data.tanggal)}
                 </p>
 
-                {/* BUTTON */}
                 <button
                     onClick={() => navigate("/history", { state: { newEntry: data } })}
                     style={{

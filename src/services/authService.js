@@ -34,5 +34,4 @@ export const loginUser = async (userId, token ) => {
         console.error("Auth Service Error: ", error);
         throw error;
     }
-    
 };
